@@ -25,9 +25,8 @@ export default class HouseController {
         await this.houseRepository.updateHouse(id, house)
     }
 
-    async create(house: HouseInput): Promise<string> {
-        await this.houseRepository.addHouse(house);
-        return 'success'
+    async create(house: HouseInput): Promise<HouseModel> {
+        return await this.houseRepository.addHouse(house);
     }
 
 }

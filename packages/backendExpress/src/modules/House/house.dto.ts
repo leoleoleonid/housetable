@@ -1,4 +1,4 @@
-import {IsString, MaxLength, MinLength, IsNumber, IsOptional, Min,} from 'class-validator';
+import {IsString, MaxLength, MinLength, IsNumber, IsOptional, Min, IsEmpty,} from 'class-validator';
 import {House} from "./house.model";
 
 
@@ -15,6 +15,9 @@ export class CreateHouseDTO implements Omit<House, 'id' | 'risk'> {
     @IsNumber()
     @Min(0)
     loanAmount: number;
+
+    @IsEmpty()
+    risk: number
 }
 
 
@@ -34,4 +37,7 @@ export class UpdateHouseDto extends CreateHouseDTO {
     @IsNumber()
     @Min(0)
     loanAmount: number;
+
+    @IsEmpty()
+    risk: number
 }

@@ -6,9 +6,12 @@ import {ErrorCode} from "../errors/error-code";
 import {NextFunction, Request, Response} from "express";
 
 export const idValidator = async (req: Request, res: Response, next: NextFunction) => {
-    const query = plainToClass(IdDTO, req.query);
-    const errorsQuery = await validate(query);
-    if (errorsQuery.length) {
-        return next(new ErrorException(ErrorCode.ValidationError, errorsQuery));
+    console.log('req.params', req.params)    ;
+    const params = plainToClass(IdDTO, {id: Number(req.params.id)});
+    const errorsParams = await validate(params);
+    if (errorsParams.length) {
+        return next(new ErrorException(ErrorCode.ValidationError, errorsParams));
     }
+
+    next();
 }
