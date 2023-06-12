@@ -4,8 +4,7 @@ import { config } from "./common/config";
 import {errorHandler} from "./common/errors/error-handler";
 import createRoutes from "./createRoutes";
 import bodyParser from "body-parser";
-import sequelizeConnection from "./common/db/connection";
-import {dbInit} from "./common/db/models";
+import sequelizeConnection, {dbInit} from "./common/db/connection";
 const PORT = config.port;
 
 const app: Application = express();
