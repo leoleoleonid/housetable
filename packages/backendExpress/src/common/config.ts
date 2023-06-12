@@ -20,7 +20,7 @@ export const config = {
     username: getRequiredEnvVar("POSTGRES_USER"),
     password: getRequiredEnvVar("POSTGRES_PASSWORD"),
     database: getRequiredEnvVar("POSTGRES_DB"),
-    synchronize: process.env.NODE_ENV === 'developnemt' ? true: false,
+    synchronize: process.env.NODE_ENV === "developnemt" ? true : false,
   },
   port: parseInt(process.env.PORT || "8000", 10),
 };

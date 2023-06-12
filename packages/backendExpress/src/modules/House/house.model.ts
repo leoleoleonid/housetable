@@ -1,87 +1,94 @@
-import { DataTypes, Model, Optional } from 'sequelize'
-import sequelizeConnection from "../../common/db/connection";
+import { DataTypes, Model, Optional, Sequelize } from "sequelize";
 
 export class House {
-    id: number;
-    address: string;
-    currentValue: number;
-    loanAmount: number;
-    risk: number;
+  id: number;
+  address: string;
+  currentValue: number;
+  loanAmount: number;
+  risk: number;
+
+  static calcRisk(self: House): number {
+    //The `risk` attribute is calculated as the ratio of `loanAmount` to `currentValue`.
+    const ratio = self.loanAmount / self.currentValue;
+    if (ratio > 1) {
+      //  The `risk` should be a value between 0 and 1.
+      self.risk = 1;
+    } else if (ratio > 0.5) {
+      // If the `loanAmount` is more than 50% of the `currentValue`, increase the risk by an additional 10%.
+      self.risk = ratio + 0.1;
+    } else {
+      self.risk = ratio;
+    }
+
+    return self.risk;
+  }
 }
 
-export interface HouseInput extends Optional<House, 'id' | 'risk'> {}
+export interface HouseInput extends Optional<House, "id" | "risk"> {}
 export interface HouseOutput extends Required<House> {}
 
 class HouseModel extends Model<House, HouseInput> implements HouseOutput {
-    public id!: number;
-    public address!: string;
-    public currentValue!: number;
-    public loanAmount!: number;
-    public risk!: number;
+  public id!: number;
+  public address!: string;
+  public currentValue!: number;
+  public loanAmount!: number;
+  public risk!: number;
 
-    calcRisk(): number {
-        //The `risk` attribute is calculated as the ratio of `loanAmount` to `currentValue`.
-        const ratio = this.loanAmount/this.currentValue;
-        if (ratio > 1) {
-            //  The `risk` should be a value between 0 and 1.
-            this.risk = 1;
-        } else if (ratio > 0.5) {
-            // If the `loanAmount` is more than 50% of the `currentValue`, increase the risk by an additional 10%.
-            this.risk = ratio + 0.1;
-        } else {
-            this.risk = ratio;
-        }
+  // need it to split model initialization from tests
+  calcRisk(): number {
+    return House.calcRisk(this);
+  }
 
-        return this.risk;
-    }
-
-    // timestamps!
-    // public readonly createdAt!: Date;
-    // public readonly updatedAt!: Date;
-    // public readonly deletedAt!: Date;
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
+  public readonly deletedAt!: Date;
 }
 
-HouseModel.init({
-    id: {
+export const initModel = (sequelizeConnection: Sequelize) =>
+  HouseModel.init(
+    {
+      id: {
         type: DataTypes.INTEGER.UNSIGNED,
         autoIncrement: true,
         primaryKey: true,
-    },
-    address: {
+      },
+      address: {
         type: DataTypes.STRING,
-        allowNull: false
-    },
-    currentValue: {
+        allowNull: false,
+      },
+      currentValue: {
         type: DataTypes.FLOAT,
         allowNull: false,
-    },
-    loanAmount: {
+      },
+      loanAmount: {
         type: DataTypes.FLOAT,
         allowNull: false,
-    },
-    risk: {
+      },
+      risk: {
         type: DataTypes.FLOAT,
         validate: {
-            isFloat: true,
-            min: 0,
-            notEmpty: true
-        }
+          isFloat: true,
+          min: 0,
+          notEmpty: true,
+        },
+      },
     },
-}, {
-    hooks: {
+    {
+      hooks: {
         beforeBulkCreate(instances, options) {
-            instances.map(instance => instance.calcRisk());
+          instances.map((instance) => instance.calcRisk());
         },
         beforeCreate: (instance: HouseModel) => {
-            instance.calcRisk();
+          instance.calcRisk();
         },
         beforeUpdate: (instance: HouseModel) => {
-            instance.calcRisk();
+          instance.calcRisk();
         },
-    },
-    sequelize: sequelizeConnection,
-    paranoid: true,
-    timestamps: true,
-});
+      },
+      sequelize: sequelizeConnection,
+      paranoid: true,
+      timestamps: true,
+    }
+  );
 
 export default HouseModel;

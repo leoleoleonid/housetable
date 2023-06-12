@@ -1,4 +1,4 @@
-import { ErrorCode } from './error-code';
+import { ErrorCode } from "./error-code";
 
 export class ErrorException extends Error {
   public name = ErrorException.name;
