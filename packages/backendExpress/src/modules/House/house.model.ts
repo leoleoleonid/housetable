@@ -1,5 +1,14 @@
 import { DataTypes, Model, Optional, Sequelize } from "sequelize";
 
+//TODO to common @lib for backend and frontend
+interface IHouse {
+  id: number;
+  address: string;
+  currentValue: number;
+  loanAmount: number;
+  risk: number;
+}
+
 export class House {
   id: number;
   address: string;

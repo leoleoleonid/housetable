@@ -1,13 +1,17 @@
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
-import styles from './page.module.css'
+import AddHouse from "@/app/components/AddHouse";
+import HousesList from "@/app/components/HouseList";
+import {getAllHouses} from "@/api";
 
-const inter = Inter({ subsets: ['latin'] })
+export default async function Home() {
+    const houses = await getAllHouses();
 
-export default function Home() {
-  return (
-    <main>
-      <h1>Next.13</h1>
-    </main>
-  )
+    return (
+        <main className="max-w-4xl mx-auto mt-4">
+            <div className="text-center my-5 flex flex-col gap-4">
+                <h1 className="text-2xl font-bold">Houses app</h1>
+                <AddHouse/>
+            </div>
+            <HousesList houses={houses}/>
+        </main>
+        )
 }

@@ -5,6 +5,8 @@ import { errorHandler } from "./common/errors/error-handler";
 import createRoutes from "./createRoutes";
 import bodyParser from "body-parser";
 import sequelizeConnection, { dbInit } from "./common/db/connection";
+import cors from "cors"
+
 const PORT = config.port;
 
 const app: Application = express();
@@ -19,6 +21,17 @@ app.get("/ping", async (_req, res) => {
     message: "pong",
   });
 });
+
+if (process.env.NODE_ENV === 'development') {
+    console.log('QQQQQQQ',process.env.CLIENT_PORT)
+    app.use(cors({
+        credentials: true,
+        "origin": `http://localhost:${process.env.CLIENT_PORT}`,
+        "methods": "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+        "preflightContinue": false,
+        "optionsSuccessStatus": 204
+    }))
+}
 
 createRoutes(app);
 
