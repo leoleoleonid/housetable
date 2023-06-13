@@ -30,7 +30,7 @@ RUN npm run test
 
 ENV NODE_ENV production
 
-RUN npm ci --omit=dev && npm cache clean --force
+RUN npm i --omit=dev && npm cache clean --force
 
 USER node
 
@@ -38,6 +38,6 @@ FROM node:16 As production
 
 COPY --chown=node:node package*.json ./
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
-COPY --chown=node:node --from=build /usr/src/app/dist ./dist
+COPY --chown=node:node --from=build /usr/src/app/build ./build
 
 #CMD [ "node", "dist/src/main.js" ]

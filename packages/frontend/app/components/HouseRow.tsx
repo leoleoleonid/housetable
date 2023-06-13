@@ -17,7 +17,16 @@ const HouseRow: React.FC<HouseRowProps> = ({house}) => {
             <td>{house.loanAmount}</td>
             <td>{house.risk}</td>
             <td>
-                <UpdateHouse id={house.id}/>
+                <UpdateHouse
+                    id={house.id}
+                    house={
+                        {
+                            address: house.address,
+                            currentValue:house.currentValue,
+                            loanAmount: house.loanAmount
+                        }
+                    }
+                />
             </td>
             <td>
                 <Link href={String(house.id)}>

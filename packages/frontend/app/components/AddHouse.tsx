@@ -1,7 +1,7 @@
 "use client"
 import {AiOutlinePlus} from "react-icons/ai";
 import Modal from "@/app/components/Modal";
-import {FormEventHandler, useState, useReducer} from "react";
+import {FormEventHandler, useState, useReducer, Dispatch} from "react";
 import {createNewHouse} from "@/api";
 import {useRouter} from "next/navigation";
 import {ICreateHouse} from "@/types/IHouse";
@@ -14,9 +14,9 @@ interface Action {
 
 export const initialState: ICreateHouse = {
     address: "",
-    currentValue: null,
-    loanAmount: null,
-};
+    currentValue: undefined,
+    loanAmount: undefined,
+} as ICreateHouse;
 
 export const AppReducer = (state: ICreateHouse, action: Action): ICreateHouse => {
     switch (action.type) {
@@ -34,7 +34,7 @@ export const AppReducer = (state: ICreateHouse, action: Action): ICreateHouse =>
 const AddHouse = () => {
     const router = useRouter();
     const [modalOpen, setModelOpen] = useState<boolean>(false);
-    const [state, dispatch]: [ICreateHouse, () => void] = useReducer(AppReducer, initialState);
+    const [state, dispatch]: [ICreateHouse, Dispatch<Action>] = useReducer(AppReducer, initialState);
 
     const handleSubmitNewHouse: FormEventHandler<HTMLFormElement> = async (event) => {
         event.preventDefault();

@@ -22,7 +22,7 @@ export const config = {
     database: getRequiredEnvVar("POSTGRES_DB"),
     synchronize: process.env.NODE_ENV === "developnemt" ? true : false,
   },
-  port: parseInt(process.env.PORT || "8000", 10),
+  port: parseInt(process.env.SERVER_PORT || "8000", 10),
 };
 
 export type ConfigType = typeof config;

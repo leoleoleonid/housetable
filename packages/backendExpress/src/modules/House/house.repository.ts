@@ -13,7 +13,7 @@ export class HouseRepository {
   }
 
   async getAll(): Promise<HouseModel[]> {
-    return await this.houseModel.findAll();
+    return await this.houseModel.findAll({ order: [["id", "DESC"]] });
   }
 
   async getById(id: number): Promise<HouseModel | null> {

@@ -1,9 +1,9 @@
 "use client"
 import Modal from "@/app/components/Modal";
-import React, {FormEventHandler, useState, useReducer} from "react";
+import React, {FormEventHandler, useState, useReducer, Dispatch} from "react";
 import {updateHouse} from "@/api";
 import {useRouter} from "next/navigation";
-import {IUpdateHouse} from "@/types/IHouse";
+import {IHouse, IUpdateHouse} from "@/types/IHouse";
 import {FiEdit} from "react-icons/fi";
 
 interface Action {
@@ -11,13 +11,7 @@ interface Action {
     value: any;
 }
 
-export const initialState: IUpdateHouse = {
-    address: "",
-    currentValue: null,
-    loanAmount: null,
-};
-
-export const AppReducer = (state: IUpdateHouse, action: Action): IUpdateHouse => {
+export const UpdateReducer = (state: IUpdateHouse, action: Action): IUpdateHouse => {
     switch (action.type) {
         case "UPDATE_ADDRESS":
             return {...state, address: action.value};
@@ -31,13 +25,14 @@ export const AppReducer = (state: IUpdateHouse, action: Action): IUpdateHouse =>
 };
 
 interface UpdateHouseProps {
-    id: number
+    id: number,
+    house: IUpdateHouse
 }
 
-const UpdateHouse: React.FC<UpdateHouseProps> = ({id}) => {
+const UpdateHouse: React.FC<UpdateHouseProps> = ({id, house}) => {
     const router = useRouter();
     const [modalOpen, setModelOpen] = useState<boolean>(false);
-    const [state, dispatch]: [IUpdateHouse, () => void] = useReducer(AppReducer, initialState);
+    const [state, dispatch]: [IUpdateHouse, Dispatch<Action>] = useReducer(UpdateReducer, house);
 
     const handleSubmitNewHouse: FormEventHandler<HTMLFormElement> = async (event) => {
         event.preventDefault();
@@ -45,7 +40,7 @@ const UpdateHouse: React.FC<UpdateHouseProps> = ({id}) => {
         //TODO add validation!!!
 
         const updates: IUpdateHouse = {};
-        console.log('state', state)
+
         if(state.address) updates.address = state.address;
         if(state.currentValue || state.currentValue === 0) updates.currentValue = state.currentValue;
         if(state.loanAmount || state.loanAmount === 0) updates.loanAmount = state.loanAmount;
@@ -53,7 +48,6 @@ const UpdateHouse: React.FC<UpdateHouseProps> = ({id}) => {
 
         try {
             const res = await updateHouse(id, updates);
-            console.log(res);
             setModelOpen(false);
             router.refresh();
         } catch (e) {
